@@ -11,7 +11,7 @@
 # See "envfile.server.txt" for domain and subdomain settings.
 
 rabbit:
-  image: ripcordengineering/rabbit:version1
+  image: kobotoolbox/rabbit:latest
   # Dev: Build the image locally.
   # build: ./base_images/rabbit
   hostname: rabbit
@@ -22,7 +22,7 @@ rabbit:
   restart: unless-stopped
 
 postgres:
-  image: ripcordengineering/postgres:version1
+  image: kobotoolbox/postgres:latest
   # Dev: Build the image locally.
   # build: ./base_images/postgres
   hostname: postgres
@@ -35,7 +35,7 @@ postgres:
   restart: unless-stopped
 
 mongo:
-  image: ripcordengineering/mongo:version1
+  image: kobotoolbox/mongo:latest
   # Dev: Build the image locally.
   # build: ./base_images/mongo
   hostname: mongo
@@ -52,7 +52,7 @@ mongo:
   restart: unless-stopped
 
 kobocat:
-  image: ripcordengineering/kobocat:version1
+  image: kobotoolbox/kobocat:latest
   # Dev: Build the image locally.
   # build: ../kobocat
   hostname: kobocat
@@ -95,7 +95,7 @@ kobocat:
   #   - 'kf-local.kobotoolbox.org:172.17.0.1'
 
 kpi:
-  image: ripcordengineering/kpi:version1
+  image: kobotoolbox/kpi:latest
   # Dev: Build the image locally.
   # build: ../kpi
   hostname: kpi
@@ -137,7 +137,7 @@ kpi:
   #   - 'kc-local.kobotoolbox.org:172.17.0.1'
 
 nginx:
-  image: ripcordengineering/nginx:version1
+  image: kobotoolbox/nginx:latest
   # Dev: Build the image locally.
   # build: ./base_images/nginx
   hostname: nginx
@@ -173,7 +173,7 @@ nginx:
 
 # Adapted from https://github.com/kobotoolbox/enketo-express/blob/docker/docker-compose.yml.
 enketo_express:
-  image: ripcordengineering/enketo_express:version1
+  image: kobotoolbox/enketo_express:latest
   # Dev: Build the image locally.
   # build: ../enketo-express/
   env_file:
