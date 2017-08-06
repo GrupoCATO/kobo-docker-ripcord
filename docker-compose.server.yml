@@ -1,7 +1,17 @@
-# For public, HTTPS servers.
+# For https kobotoolbox server behind jwilder/nginx-proxy with ssl certificate provided by docker-letsencrypt-nginx-proxy-companion.
+# Follow the instructions under "docker-letsencrypt-nginx-proxy-companion" to set up jwilder/nginx-proxy prior to starting kobotoolbox.
+# References:
+#   docker-letsencrypt-nginx-proxy-companion = https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion
+#   jwilder/nginx-proxy = https://github.com/jwilder/nginx-proxy ==> SSL Support
+# For http kobotoolbox server see nginx: activate (delete #) HTTPS_METHOD and deactivate (add #) LETSENCRYPT lines.
+#    - HTTPS_METHOD=noredirect
+# #   - LETSENCRYPT_HOST=...
+# #   - LETSENCRYPT_EMAIL=user@domain
+#
+# See "envfile.server.txt" for domain and subdomain settings.
 
 rabbit:
-  image: kobotoolbox/rabbit:latest
+  image: ripcordengineering/rabbit:version1
   # Dev: Build the image locally.
   # build: ./base_images/rabbit
   hostname: rabbit
@@ -9,10 +19,10 @@ rabbit:
     - RABBITMQ_LOG_BASE=/var/log/rabbitmq
   volumes:
     - ./log/rabbitmq:/var/log/rabbitmq
-  restart: on-failure
+  restart: unless-stopped
 
 postgres:
-  image: kobotoolbox/postgres:latest
+  image: ripcordengineering/postgres:version1
   # Dev: Build the image locally.
   # build: ./base_images/postgres
   hostname: postgres
@@ -22,10 +32,10 @@ postgres:
     - ./.vols/db:/srv/db
     - ./backups/postgres:/srv/backups
     - ./base_images/postgres/init_postgres.bash:/etc/my_init.d/10_init_postgres.bash:ro
-  restart: on-failure
+  restart: unless-stopped
 
 mongo:
-  image: kobotoolbox/mongo:latest
+  image: ripcordengineering/mongo:version1
   # Dev: Build the image locally.
   # build: ./base_images/mongo
   hostname: mongo
@@ -39,10 +49,10 @@ mongo:
   volumes:
     - ./.vols/mongo:/srv/db
     - ./backups/mongo:/srv/backups
-  restart: on-failure
+  restart: unless-stopped
 
 kobocat:
-  image: kobotoolbox/kobocat:latest
+  image: ripcordengineering/kobocat:version1
   # Dev: Build the image locally.
   # build: ../kobocat
   hostname: kobocat
@@ -62,7 +72,6 @@ kobocat:
     - ./.vols/static/kobocat:/srv/static
     - ./.vols/kobocat_media_uploads:/srv/src/kobocat/media
     - ./backups/kobocat:/srv/backups
-    - ./log/kobocat:/srv/logs
     - ./scripts/wait_for_rabbit.bash:/etc/my_init.d/01_wait_for_rabbit.bash:ro
     - ./scripts/wait_for_mongo.bash:/etc/my_init.d/02_wait_for_mongo.bash:ro
     - ./scripts/wait_for_postgres.bash:/etc/my_init.d/03_wait_for_postgres.bash:ro
@@ -75,9 +84,9 @@ kobocat:
     #- ~/devel/liclipse/plugins/org.python.pydev_5.4.0.201611281405/pysrc:/srv/pydev_orig:ro
     # Dev: Share your `.transifexrc` into the container.
     # - ./.transifexrc:/root/.transifexrc
-  environment:
-    - ENKETO_PROTOCOL=https
-  restart: on-failure
+#  environment:
+#    - ENKETO_PROTOCOL=https
+  restart: unless-stopped
   # NOTE: Workaround to force name resolution inside containers. If enabled, 
   #   customize with your actual subdomains+domain and server IP. Clients 
   #   might also need similar manipulations to their `hosts` files.
@@ -86,7 +95,7 @@ kobocat:
   #   - 'kf-local.kobotoolbox.org:172.17.0.1'
 
 kpi:
-  image: kobotoolbox/kpi:latest
+  image: ripcordengineering/kpi:version1
   # Dev: Build the image locally.
   # build: ../kpi
   hostname: kpi
@@ -97,8 +106,8 @@ kpi:
     - ./envfiles/kpi.txt
     - ./envfiles/nginx.txt
     - ./envfiles/smtp.txt
-  environment:
-    - SECURE_PROXY_SSL_HEADER=HTTP_X_FORWARDED_PROTO, https
+#  environment:
+#    - SECURE_PROXY_SSL_HEADER=HTTP_X_FORWARDED_PROTO, https
   links:
     - postgres
     - rabbit
@@ -107,7 +116,6 @@ kpi:
     - ./.vols/static/kpi:/srv/static
     # The Whoosh search index needs persistent storage
     - ./.vols/whoosh:/srv/whoosh
-    - ./log/kpi:/srv/logs
     - ./scripts/wait_for_rabbit.bash:/etc/my_init.d/01_wait_for_rabbit.bash:ro
     - ./scripts/wait_for_mongo.bash:/etc/my_init.d/02_wait_for_mongo.bash:ro
     - ./scripts/wait_for_postgres.bash:/etc/my_init.d/03_wait_for_postgres.bash:ro
@@ -116,13 +124,11 @@ kpi:
     # Dev: Use live source directories from the host machine.
     #- ../kpi:/srv/src/kpi
     #- ../formpack/src/formpack:/usr/local/lib/python2.7/dist-packages/formpack
-    # Allow access to Kobocat's media uploads within KPI
-    - ./.vols/kobocat_media_uploads:/srv/src/kobocat/media
     # Dev: Share PyDev remote debugger source into container.
     #- ~/devel/liclipse/plugins/org.python.pydev_5.4.0.201611281405/pysrc:/srv/pydev_orig:ro
     # Dev: Share your `.transifexrc` into the container.
     # - ./.transifexrc:/root/.transifexrc
-  restart: on-failure
+  restart: unless-stopped
   # NOTE: Workaround to force name resolution inside containers. If enabled, 
   #   customize with your actual subdomains+domain and server IP. Clients 
   #   might also need similar manipulations to their `hosts` files.
@@ -131,7 +137,7 @@ kpi:
   #   - 'kc-local.kobotoolbox.org:172.17.0.1'
 
 nginx:
-  image: kobotoolbox/nginx:latest
+  image: ripcordengineering/nginx:version1
   # Dev: Build the image locally.
   # build: ./base_images/nginx
   hostname: nginx
@@ -143,9 +149,15 @@ nginx:
   environment:
     - NGINX_CONFIG_FILE_NAME=nginx_site_https.conf
     - TEMPLATED_VAR_REFS=$${PUBLIC_DOMAIN_NAME} $${KOBOFORM_PUBLIC_SUBDOMAIN} $${KOBOCAT_PUBLIC_SUBDOMAIN} $${ENKETO_EXPRESS_PUBLIC_SUBDOMAIN}
-  ports:
-    - 80:80
-    - 443:443
+    - VIRTUAL_HOST=${KOBOFORM_PUBLIC_SUBDOMAIN}.${PUBLIC_DOMAIN_NAME},${KOBOCAT_PUBLIC_SUBDOMAIN}.${PUBLIC_DOMAIN_NAME},${ENKETO_EXPRESS_PUBLIC_SUBDOMAIN}.${PUBLIC_DOMAIN_NAME}
+# Disable the two lines below for an http kobotoolbox deployment.
+    - LETSENCRYPT_HOST=${KOBOFORM_PUBLIC_SUBDOMAIN}.${PUBLIC_DOMAIN_NAME},${KOBOCAT_PUBLIC_SUBDOMAIN}.${PUBLIC_DOMAIN_NAME},${ENKETO_EXPRESS_PUBLIC_SUBDOMAIN}.${PUBLIC_DOMAIN_NAME}
+    - LETSENCRYPT_EMAIL=${KOBO_SUPPORT_EMAIL}
+# Enable the line below for an http kobotoolbox deployment.
+#    - HTTPS_METHOD=noredirect
+#  ports:
+#    - 80:80
+#    - 443:443
   volumes:
       - ./.vols/static:/srv/www:ro
       # get the logs out of glusterfs!
@@ -157,11 +169,11 @@ nginx:
     - kobocat
     - kpi
     - enketo_express
-  restart: on-failure
+  restart: unless-stopped
 
 # Adapted from https://github.com/kobotoolbox/enketo-express/blob/docker/docker-compose.yml.
 enketo_express:
-  image: kobotoolbox/enketo_express
+  image: ripcordengineering/enketo_express:version1
   # Dev: Build the image locally.
   # build: ../enketo-express/
   env_file:
@@ -170,7 +182,7 @@ enketo_express:
   links:
     - redis_main
     - redis_cache
-  restart: on-failure
+  restart: unless-stopped
   volumes:
     - ./scripts/runtime_variables_enketo_express.source.bash:/etc/profile.d/runtime_variables_enketo_express.source.bash.sh:ro
     - ./enketo_express/config.json:/srv/tmp/enketo_express_config.json:ro
@@ -194,7 +206,7 @@ redis_main:
   volumes:
     - ./redis/redis-enketo-main.conf:/etc/redis/redis.conf:ro
     - ./.vols/redis_main_data/:/data/
-  restart: on-failure
+  restart: unless-stopped
 
 # Adapted from https://github.com/kobotoolbox/enketo-express/blob/docker/docker-compose.yml.
 redis_cache:
@@ -202,4 +214,4 @@ redis_cache:
   # Map our "cache" Redis config into the container.
   volumes:
     - ./redis/redis-enketo-cache.conf:/etc/redis/redis.conf:ro
-  restart: on-failure
+  restart: unless-stopped
