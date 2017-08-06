@@ -1,7 +1,7 @@
 # kobo-docker
 
 `kobo-docker` is used to run a copy of the [KoBo Toolbox](http://www.kobotoolbox.org) survey data collection platform on a machine of your choosing. It relies [Docker](https://docker.com) to separate the different parts of KoBo into different containers (which can be thought of as lighter-weight virtual machines) and [Docker Compose](https://docs.docker.com/compose/) to configure, run, and connect those containers. Below is a diagram of the containers that make up a running `kobo-docker` system and their connections:
-![Container diagram]( kobo-docker-ripcord/doc/Container_diagram.png )
+![Container diagram](./doc/Container_diagram.png)
 
 
 
