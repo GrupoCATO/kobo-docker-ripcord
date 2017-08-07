@@ -1,27 +1,55 @@
 # A note of thanks and explanation:
+Thank you to the developers of KoboToolbox for putting together a great tool. `kobo-docker-ripcord` does little more than offer an alternative and more convenient means of [KoBo Toolbox](http://www.kobotoolbox.org) deployment in network environments making use of domain names. Specifically, `kobo-docker-ripcord` is a reconfiguration of `kobo-docker` that allows for the placement of KoBo Toolbox behind [jwilder reverse proxy](https://github.com/jwilder/nginx-proxy) (reverse proxy). By doing so, a straight forward option is provided to upgrade a Kobo Toolbox deployment with automated SSL certificate support using [letsencrypt companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) (letsencrypt). As a result, **HTTPS** deployments typically done for **WEB** access are no more difficult than **HTTP** deployments typically done for **LAN** access. Additionally, running KoBo Toolbox behind `jwilder reverse proxy` allows for increased container density on the Docker host, the option to run mulitple KoBo Toolbox deployments on the same Docker host, etc.
 
-Thank you to the developers of KoboToolbox for putting together a great tool. `kobo-docker-ripcord` does little more than offer an alternative and more convenient means of [KoBo Toolbox](http://www.kobotoolbox.org) deployment in network environments making use of domain names. Specifically, `kobo-docker-ripcord` is a reconfiguration of `kobo-docker` that allows for the placement of KoBo Toolbox behind [jwilder reverse proxy](https://github.com/jwilder/nginx-proxy) (reverse proxy). By doing so a straight forward option is provided to upgrade a Kobo Toolbox deployment with automated SSL certificate support using [letsencrypt companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) (letsencrypt). As a result, **HTTPS** deployments typically done for **WEB** access are no more difficult than **HTTP** deployments typically done for **LAN** access. Additionally, running KoBo Toolbox behind `jwilder reverse proxy` allows for increase container density on the Docker host, the option to run mulitple KoBo Toolbox deployments on the same Docker host, etc.
-
-# kobo-docker-ripcord
-
-`kobo-docker-ripcord` is used to run a copy of the KoBo Toolbox survey data collection platform on a machine of your choosing. It relies on [Docker](https://docker.com) to separate the different parts of KoBo into different containers (which can be thought of as lighter-weight virtual machines) and [Docker Compose](https://docs.docker.com/compose/) to configure, run, and connect those containers. Below is a diagram of the containers that make up a running `kobo-docker-ripcord` system and their connections:
+# kobo-docker-ripcord:
+`kobo-docker-ripcord` is used to run a copy of the KoBo Toolbox survey data collection platform on a machine of your choosing. It relies on [Docker](https://docker.com) to separate KoBo into different containers (which can be thought of as lighter-weight virtual machines) and [Docker Compose](https://docs.docker.com/compose/) to configure, run, and connect those containers. Below is a diagram of the containers that make up a running `kobo-docker-ripcord` system and their connections:
 ![Container diagram](./doc/Container_diagram.png)
 
-# Version Control:
+# Branches:
+**master** -- Based on KoBo Toolbox images published in MAR2017 and is confirmed fully functional.
 
-**Master** -- Based on KoBo Toolbox images published in MAR2017 and is confirmed fully functional.
+**latest_kobotoolbox** -- Based on latest KoBo Toolbox images. Form upload not functional on the main KoBo project page. Forms 
+can be uploaded on the legacy project page. Password update not functional on the main KoBo project page. Passwords can be
+updated on the KoBo admin page.
 
-**Latest** -- Based on latest KoBo Toolbox images. Form upload not functional on the main KoBo project page. Forms can be 
-              uploaded on the legacy project page. Password update not functional on the main KoBo project page. Passwords can 
-              be updated on the KoBo admin page.
+# Prerequisite Tools & Knowledge:
+[ESXi](https://www.vmware.com/products/esxi-and-esx.html) -- A tested and known good Hypervisor choice.
+
+[Ubuntu](https://www.ubuntu.com/) -- A tested and known good KoBo Toolbox server choice.
+
+[WinSCP](https://winscp.net/eng/download.php) -- Provides a convenient way to transfer files to a remote server.
+
+[PuTTY](http://www.putty.org/) -- Provides an [SSH](https://www.ssh.com/ssh/protocol/) interface to control a remote server.
+
+[nano](https://www.howtogeek.com/howto/42980/the-beginners-guide-to-nano-the-linux-command-line-text-editor/) -- Linux command-line text editor which is easier to use than [Vim](https://www.linux.com/learn/vim-101-beginners-guide-vim).
+
+[Docker Command Line Interface](https://docs.docker.com/engine/reference/commandline/cli/#description) -- Docker commands.
+
+[Docker Compose Command Line Interface](https://docs.docker.com/compose/reference/) -- Docker Compose commands.
+
+[GitHub Help](https://help.github.com/) -- Working with GitHub.
+
+[Router Configuration](https://www.dd-wrt.com/wiki/index.php/Tutorials) -- DD-WRT tutorials apply to router basics in general.
+
+[FreeDNS](http://freedns.afraid.org/) -- Bare bones but highly functional DNS provider with free domain names for testing purposes.
 
 # A word of advice:
-
-Correct network setup is a fundamental requirement to successfully deploy an instance of KoBo Toolbox using `kobo-docker-ripcord`. Personnel deploying KoBo Toolbox with `kobo-docker-ripcord` need a working knowledge of and access to routers and DNS mechanisms (private network DNS servers and/or public DNS providers depending on deployment type). In the case of **WEB** accessible deployments, router access is required to forward **HTTP** (port 80) and **HTTPS** (port 443) traffic to the Docker host running on the local network. In the case of both **WEB** and **LAN** accessible deployments, DNS mechanism access is required to set domain and subdomain information as well as to provide the DNS mechanism with destination information so that users can successfully browse to the KoBo Toolbox instance. For those with limited or no knowledge of routers and DNS mechanisms, it is still possible to deploy KoBo Toolbox using `kobo-docker-ripcord`. Just expect to go through all the agony and wasted time associated with learning the things a person with IT experience had to go through. The information and tools provided below should accelerate time to successful deployment. However, the deployment of KoBo Toolbox using `kobo-docker-ripcord` will in all liklihood not be a painless process. There are a mountain of variables and there is no practical way to cover them all. Hopefully the community can help when times are darkest.   
+Correct network setup is a fundamental requirement to successfully deploy an instance of KoBo Toolbox using `kobo-docker-ripcord`. Personnel deploying KoBo Toolbox with `kobo-docker-ripcord` need a working knowledge of and access to routers and DNS mechanisms (private network DNS servers and/or public DNS providers depending on deployment type). In the case of **WEB** accessible deployments, router access is required to forward **HTTP** (port 80) and **HTTPS** (port 443) traffic to the Docker host running on the local network. In the case of both **WEB** and **LAN** accessible deployments, DNS mechanism access is required to set domain and subdomain information as well as to provide the DNS mechanism with destination information so that users can successfully browse to the KoBo Toolbox instance. For those with limited or no knowledge of routers and DNS mechanisms, it is still possible to deploy KoBo Toolbox using `kobo-docker-ripcord`. Just expect to go through all the agony and wasted time associated with learning the things a person with IT experience had to go through. The information and tools provided below should accelerate the deployment process. However, the deployment of KoBo Toolbox using `kobo-docker-ripcord` will in all liklihood not be a painless process. There are a mountain of variables and there is no practical way to cover them all. Hopefully the community can help when times are darkest.   
 
 # Setup procedure:
+Summary: A deliberate KoBo deployment is broken down into three categories. First, a server with all necessary updates is set up with [Docker Engine](https://docs.docker.com/engine/) and [Docker Compose](https://docs.docker.com/compose/). Next, proper network configuration is verfied by deploying `network-ripcord`. `network-ripcord` includes a web server to aid in network configuration verfication and troubleshooting. After network functionality is confirmed KoBo Toolbox is deployed using `kobo-docker-ripcord`.
 
-Summary: A deliberate KoBo deployment is broken down into three categories. First, a server with all necessary updates is set up with [Docker Engine](https://docs.docker.com/engine/) and [Docker Compose](https://docs.docker.com/compose/). Next, proper network configuration is verfied by deploying `network-ripcord`. `network-ripcord` includes a web server to aid in network configuration verfication and troubleshooting. After network functionality is confirmed KoBo Toolbox is deployed using `kobo-docker-ripcord`.    
+Confirming proper network configuration can be tedious and time consuming. However, it is **absolutely** critical that the network is working properly before deploying KoBo Toolbox. If the network is not working correctly there is no chance that KoBo Toolbox will work correctly given that KoBo relies on the network to operate. DO NOT try to deploy KoBo without a know good network configuration. Fix network problems first then deploy KoBo.
+
+# Server Setup:
+Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-16-04) has excellent tutorials that make configuration easy and repeatable. 
+
+[Update Ubuntu Server](https://www.techonthenet.com/linux/sysadmin/ubuntu/update_16_04.php) -- Bring the server up to date.
+
+[Docker Compose Installation on Ubuntu 16-04](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-16-04) -- Make sure to complete the Prerequisites then do all the steps. Return here when complete.
+
+# Network Setup:
+
 
 1. The first decision to make is whether your KoBo Toolbox deployment will be **HTTP** or **HTTPS** accessible. While secure communications provided by **HTTPS** are desirable, **HTTPS** is not available for **LAN** deployments based on how [letsencrypt](https://letsencrypt.org/) verifies certificates. **HTTP** deployments are suitable in cases where security threats are unlikely, such as for use strictly within a secure **LAN** network. To emphasize the difference between the two types of setup, they are referred to herein as **web** (HTTPS) and **lan** (HTTP).
 
