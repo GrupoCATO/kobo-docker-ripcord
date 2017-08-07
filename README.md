@@ -1,13 +1,25 @@
-# kobo-docker
+# A note of thanks and explanation:
 
-`kobo-docker` is used to run a copy of the [KoBo Toolbox](http://www.kobotoolbox.org) survey data collection platform on a machine of your choosing. It relies [Docker](https://docker.com) to separate the different parts of KoBo into different containers (which can be thought of as lighter-weight virtual machines) and [Docker Compose](https://docs.docker.com/compose/) to configure, run, and connect those containers. Below is a diagram of the containers that make up a running `kobo-docker` system and their connections:
+Thank you to the developers of KoboToolbox for putting together a great tool. `kobo-docker-ripcord` does little more than offer an alternative and more convenient means of [KoBo Toolbox](http://www.kobotoolbox.org) deployment in network environments making use of domain names. Specifically, `kobo-docker-ripcord` is a reconfiguration of `kobo-docker` that allows for the placement of KoBo Toolbox behind [jwilder reverse proxy](https://github.com/jwilder/nginx-proxy) (reverse proxy). By doing so a straight forward option is provided to upgrade a Kobo Toolbox deployment with automated SSL certificate support using [letsencrypt companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) (letsencrypt). As a result, **HTTPS** deployments typically done for **WEB** access are no more difficult than **HTTP** deployments typically done for **LAN** access. Additionally, running KoBo Toolbox behind `jwilder reverse proxy` allows for increase container density on the Docker host, the option to run mulitple KoBo Toolbox deployments on the same Docker host, etc.
+
+# kobo-docker-ripcord
+
+`kobo-docker-ripcord` is used to run a copy of the KoBo Toolbox survey data collection platform on a machine of your choosing. It relies on [Docker](https://docker.com) to separate the different parts of KoBo into different containers (which can be thought of as lighter-weight virtual machines) and [Docker Compose](https://docs.docker.com/compose/) to configure, run, and connect those containers. Below is a diagram of the containers that make up a running `kobo-docker-ripcord` system and their connections:
 ![Container diagram](./doc/Container_diagram.png)
 
+# Version Control:
 
+**Version1** -- Based on KoBo Toolbox images published in MAR2017.   
+
+# A word of advice:
+
+Correct network setup is a fundamental requirement to successfully deploy an instance of KoBo Toolbox using `kobo-docker-ripcord`. Personnel deploying KoBo Toolbox with `kobo-docker-ripcord` need a working knowledge of and access to routers and DNS mechanisms (private network DNS servers and/or public DNS providers depending on deployment type). In the case of **WEB** accessible deployments, router access is required to forward **HTTP** (port 80) and **HTTPS** (port 443) traffic to the Docker host running on the local network. In the case of both **WEB** and **LAN** accessible deployments, DNS mechanism access is required to set domain and subdomain information as well as to provide the DNS mechanism with destination information so that users can successfully browse to the KoBo Toolbox instance. For those with limited or no knowledge of routers and DNS mechanisms, it is still possible to deploy KoBo Toolbox using `kobo-docker-ripcord`. Just expect to go through all the agony and wasted time associated with learning the things a person with IT experience had to go through. The information and tools provided below should accelerate time to successful deployment. However, the deployment of KoBo Toolbox using `kobo-docker-ripcord` will in all liklihood not be a painless process. There are a mountain of variables and there is no practical way to cover them all. Hopefully the community can help when times are darkest.   
 
 # Setup procedure:
 
-1. The first decision to make is whether your `kobo-docker` instance will use secure (**HTTPS**) or insecure (plain **HTTP**) communications when interacting with clients. While secure communications are obviously desirable, the requirements imposed by the public key cryptographic system underpinning HTTPS add a considerable degree of complexity to the initial setup (we are in the process of eventually simplifying this with [`letsencrypt`](https://letsencrypt.org/)). In contrast, setups using plain HTTP can be suitable in some cases where security threats are unlikely, such as for use strictly within a secure private network. To emphasize the difference between the two types of setup, they are referred to herein as **server** (HTTPS) and **local** (HTTP).
+Summary: A deliberate KoBo deployment is broken down into three categories. First, a server with all necessary updates is set up with [Docker Engine](https://docs.docker.com/engine/) and [Docker Compose](https://docs.docker.com/compose/). Next, proper network configuration is verfied by deploying `network-ripcord`. `network-ripcord` includes a web server to aid in network configuration verfication and troubleshooting. After network functionality is confirmed KoBo Toolbox is deployed using `kobo-docker-ripcord`.    
+
+1. The first decision to make is whether your KoBo Toolbox deployment will be **HTTP** or **HTTPS** accessible. While secure communications provided by **HTTPS** are desirable, **HTTPS** is not available for **LAN** deployments based on how [letsencrypt](https://letsencrypt.org/) verifies certificates. **HTTP** deployments are suitable in cases where security threats are unlikely, such as for use strictly within a secure **LAN** network. To emphasize the difference between the two types of setup, they are referred to herein as **web** (HTTPS) and **lan** (HTTP).
 
 2. Clone this repository, retaining the directory name `kobo-docker`.
 
