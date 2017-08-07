@@ -48,6 +48,8 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
 
 2. [Docker Compose Installation on Ubuntu 16-04](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-16-04) -- Make sure to complete the Prerequisites then do all the steps. Return here when complete.
 
+3. [Disable the Ubuntu Server Firewall](https://help.ubuntu.com/community/UFW) -- Firewall is disabled to eliminate problems during deployment. **After** a fully functional KoBo deployment is made feel free to enable the firewall.
+
 # Network Setup:
 
 
