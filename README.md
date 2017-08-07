@@ -9,7 +9,11 @@ Thank you to the developers of KoboToolbox for putting together a great tool. `k
 
 # Version Control:
 
-**Version1** -- Based on KoBo Toolbox images published in MAR2017.   
+**Master** -- Based on KoBo Toolbox images published in MAR2017 and is confirmed fully functional.
+
+**Latest** -- Based on latest KoBo Toolbox images. Form upload not functional on the main KoBo project page. Forms can be 
+              uploaded on the legacy project page. Password update not functional on the main KoBo project page. Passwords can 
+              be updated on the KoBo admin page.
 
 # A word of advice:
 
