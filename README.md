@@ -44,9 +44,9 @@ Confirming proper network configuration can be tedious and time consuming. Howev
 # Server Setup:
 Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-16-04) has excellent tutorials that make configuration easy and repeatable. 
 
-[Update Ubuntu Server](https://www.techonthenet.com/linux/sysadmin/ubuntu/update_16_04.php) -- Bring the server up to date.
+1. [Update Ubuntu Server](https://www.techonthenet.com/linux/sysadmin/ubuntu/update_16_04.php) -- Bring the server up to date.
 
-[Docker Compose Installation on Ubuntu 16-04](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-16-04) -- Make sure to complete the Prerequisites then do all the steps. Return here when complete.
+2. [Docker Compose Installation on Ubuntu 16-04](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-16-04) -- Make sure to complete the Prerequisites then do all the steps. Return here when complete.
 
 # Network Setup:
 
