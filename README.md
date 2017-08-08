@@ -53,15 +53,9 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
 # Network Setup:
 1. The first decision to make is whether your KoBo Toolbox deployment will be **HTTP** or **HTTPS** accessible. While secure communications provided by **HTTPS** are desirable, **HTTPS** is not available for **LAN** deployments based on how [letsencrypt](https://letsencrypt.org/) verifies certificates. **HTTP** deployments are suitable in cases where security threats are unlikely, such as for use strictly within a secure **LAN** network. To emphasize the difference between the two types of setup, they are referred to herein as **web** (HTTPS) and **lan** (HTTP).
 
-2. [Clone](https://help.github.com/articles/cloning-a-repository/) [reverse-proxy-ripcord](https://github.com/jpstaub/reverse-proxy-ripcord).
+2. [Clone](https://help.github.com/articles/cloning-a-repository/) the [reverse-proxy-ripcord](https://github.com/jpstaub/reverse-proxy-ripcord) repository.
 
 3. Follow the instructions in [reverse-proxy-ripcord](https://github.com/jpstaub/reverse-proxy-ripcord) to set up a fuctional **web** or **lan** network environment. This step must be completed before moving on. KoBo requires a good network.
-
-4. Edit the environment file [`envfile.server.txt`](./envfile.server.txt), filling in **all** mandatory variables, and optional variables as needed.
-
-5. Make the DNS system settings changes necessary to reflect the domain and subdomain settings in `envfile.server.txt`.
-
-6. `ping` associated Koboform, Kobocat, and Enketo Express addresses. All addresses must return a successful ping response. If not, make adjustments to the DNS system until all pings are good. 
 
 # KoBo Toolbox Deployment:
 1. [Clone](https://help.github.com/articles/cloning-a-repository/) this repository.
@@ -69,7 +63,7 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
 2. Based on your desired instance type, create a symlink named `docker-compose.yml` to either [`docker-compose.web.yml`](./docker-compose.web.yml) or [`docker-compose.lan.yml`](./docker-compose.lan.yml) using the following as an example:
 
     $ln -s docker-compose.web.yml docker-compose.yml 
-    
+
    To see whether or not a symlink was created properly:
    
     $ ls -la
@@ -78,9 +72,17 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
    
     $ rm docker-compose.yml
     
-3. Optionally enable additional settings for your Google Analytics token, S3 bucket, e-mail settings, etc. by editing the files in [`envfiles/`](./envfiles).
+3. Edit the environment file [`envfile.server.txt`](./envfile.server.txt), filling in **all** mandatory variables, and optional variables as needed.    
+    
+4. Make the DNS system settings changes necessary to reflect the domain and subdomain settings made in `envfile.server.txt`.
 
-4. Start the KoBo deployment and monitor logs: 
+5. `ping` associated Koboform, Kobocat, and Enketo Express addresses. All addresses must return a successful ping response. If not, make adjustments to the DNS system until all pings are good. 
+
+    $ ping kobo.example.com
+
+6. Optionally enable additional settings for your Google Analytics token, S3 bucket, e-mail settings, etc. by editing the files in [`envfiles/`](./envfiles).
+
+7. Start the KoBo deployment and monitor logs: 
 
     $ docker-compose up -d
     
@@ -88,9 +90,9 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
     
     CNTRL c to escape logs
     
-5. When Enketo Express has finished starting and is showing four workers ready browse to the KoBo Toolbox site. Browse to `http://{KOBOFORM_NETWORK_SUBDOMAIN}.{NETWORK_DOMAIN_NAME}`. For deployments making use of LetsEncrypt the browser should be automatically directed to the https KoBo Toolbox site.
+8. When Enketo Express has finished starting and is showing four workers ready browse to the KoBo Toolbox site. Browse to `http://{KOBOFORM_NETWORK_SUBDOMAIN}.{NETWORK_DOMAIN_NAME}`. For deployments making use of LetsEncrypt the browser should be automatically directed to the https KoBo Toolbox site.
 
-6. To check on the status of KoBo containers:
+9. To check on the status of KoBo containers:
 
     $ docker-compose ps
     
@@ -98,7 +100,7 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
    
     $ docker ps
 
-7. Stop the KoBo deployment as required:
+10. Stop the KoBo deployment as required:
 
    To preserve the KoBo containers for later use:
    
