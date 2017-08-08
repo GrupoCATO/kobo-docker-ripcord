@@ -62,15 +62,15 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
 
 2. Based on your desired instance type, create a symlink named `docker-compose.yml` to either [`docker-compose.web.yml`](./docker-compose.web.yml) or [`docker-compose.lan.yml`](./docker-compose.lan.yml) using the following as an example:
 
-    ```$ln -s docker-compose.web.yml docker-compose.yml``` 
+```$ln -s docker-compose.web.yml docker-compose.yml``` 
 
-   To see whether or not a symlink was created properly:
+To see whether or not a symlink was created properly:
    
-    ```$ ls -la```
+```$ ls -la```
 
-   To remove a symlink run:
+To remove a symlink run:
    
-    ```$ rm docker-compose.yml```
+```$ rm docker-compose.yml```
     
 3. Edit the environment file [`envfile.server.txt`](./envfile.server.txt), filling in **all** mandatory variables, and optional variables as needed.    
     
@@ -78,37 +78,37 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
 
 5. `ping` associated Koboform, Kobocat, and Enketo Express addresses. All addresses must return a successful ping response. If not, make adjustments to the DNS system until all pings are good. 
 
-    ```$ ping kobo.example.com```
+```$ ping kobo.example.com```
 
 6. Optionally enable additional settings for your Google Analytics token, S3 bucket, e-mail settings, etc. by editing the files in [`envfiles/`](./envfiles).
 
 7. Start the KoBo deployment and monitor logs: 
 
-    ```$ docker-compose up -d
+```$ docker-compose up -d
     
-    $ docker-compose logs -f``` 
+$ docker-compose logs -f``` 
     
-    CNTRL c to escape logs
+CNTRL c to escape logs
     
 8. When Enketo Express has finished starting and is showing four workers ready browse to the KoBo Toolbox site. Browse to `http://{KOBOFORM_NETWORK_SUBDOMAIN}.{NETWORK_DOMAIN_NAME}`. For deployments making use of LetsEncrypt the browser should be automatically directed to the https KoBo Toolbox site.
 
 9. To check on the status of KoBo containers:
 
-    ```$ docker-compose ps```
+```$ docker-compose ps```
     
-   or
+or
    
-    ```$ docker ps```
+```$ docker ps```
 
 10. Stop the KoBo deployment as required:
 
    To preserve the KoBo containers for later use:
    
-    ```$ docker-compose stop```
+```$ docker-compose stop```
 
    To destroy the KoBo containers (data volumes will be retained for later use so long as the `kobo-docker-ripcord` directory persists):
    
-    ```$ docker-compose down```
+```$ docker-compose down```
     
 # Backups
 Automatic, periodic backups of KoBoCAT media, MongoDB, and Postgres can be individually enabled by uncommenting (and optionally customizing) the `*_BACKUP_SCHEDULE` variables in your `envfile`. When enabled, timestamped backups will be placed in `backups/kobocat`, `backups/mongo`, and `backups/postgres`, respectively. Redis backups are currently not generated, but the `redis_main` DB file is updated every 5 minutes and can always be found in `.vols/redis_main_data/`.
