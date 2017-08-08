@@ -60,10 +60,9 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
 # KoBo Toolbox Deployment:
 1. [Clone](https://help.github.com/articles/cloning-a-repository/) this repository.
 
-2. Based on your desired instance type, create a symlink named `docker-compose.yml` to either [`docker-compose.web.yml`
-(./docker-compose.web.yml) or [`docker-compose.lan.yml`](./docker-compose.lan.yml) using the following as an example:
+2. Based on your desired instance type, create a symlink named `docker-compose.yml` to either [`docker-compose.web.yml`](./docker-compose.web.yml) or [`docker-compose.lan.yml`](./docker-compose.lan.yml) using the following as an example:
 
-    $ln -s docker-compose.web.yml docker-compose.yml
+ ```$ln -s docker-compose.web.yml docker-compose.yml```
 
 To see whether or not a symlink was created properly:
    
@@ -86,9 +85,9 @@ not, make adjustments to the DNS system until all pings are good.
 
 7. Start the KoBo deployment and monitor logs: 
     
-    $ docker-compose up -d
+ ```$ docker-compose up -d```
     
-    $ docker-compose logs -f 
+ ```$ docker-compose logs -f``` 
     
 CNTRL c to escape logs
     
@@ -96,9 +95,9 @@ CNTRL c to escape logs
 
 9. To check on the status of KoBo containers:
 
-    $ docker-compose ps
+ ```$ docker-compose ps```
     
-or
+or, to see all containers running on the Docker host:
    
     $ docker ps
 
@@ -129,9 +128,9 @@ docker exec -it kobodocker_postgres_1 /srv/backup_postgres.bash
 
 2. To inspect the log output from the containers, execute `docker-compose logs -f` or for a specific container use e.g. `docker-compose logs -f redis_main`. It is also worth checking the logs of the `reverse-proxy-ripcord` containers to see how the network is responding to requests. 
 
-3. Use `ping` to confirm the addresses of Koboform, Kobocat, and Enketo Express are routing correctly. If good pings are returned the problem is likely associated with router port forwarding. 
+3. Use `ping` to confirm the addresses of Koboform, Kobocat, and Enketo Express are routing correctly. If good pings are returned the problem is likely associated with router port forwarding. If bad pings are returned the problem is likely associated with the DNS system. 
 
-4. Double check that router port forwarding is set correctly. 
+4. Double check that router port forwarding is set correctly for good pings. Double check that DNS system settings are correct for bad pings. 
 
 5. Double check the firewall on the Docker host is disabled.
 
