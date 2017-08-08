@@ -84,8 +84,8 @@ kobocat:
     #- ~/devel/liclipse/plugins/org.python.pydev_5.4.0.201611281405/pysrc:/srv/pydev_orig:ro
     # Dev: Share your `.transifexrc` into the container.
     # - ./.transifexrc:/root/.transifexrc
-  environment:
-    - ENKETO_PROTOCOL=https
+#  environment:
+#    - ENKETO_PROTOCOL=https
   restart: unless-stopped
   # NOTE: Workaround to force name resolution inside containers. If enabled, 
   #   customize with your actual subdomains+domain and server IP. Clients 
@@ -106,8 +106,8 @@ kpi:
     - ./envfiles/kpi.txt
     - ./envfiles/nginx.txt
     - ./envfiles/smtp.txt
-  environment:
-    - SECURE_PROXY_SSL_HEADER=HTTP_X_FORWARDED_PROTO, https
+#  environment:
+#    - SECURE_PROXY_SSL_HEADER=HTTP_X_FORWARDED_PROTO, https
   links:
     - postgres
     - rabbit
