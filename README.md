@@ -57,7 +57,11 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
 
 3. Follow the instructions in [reverse-proxy-ripcord](https://github.com/jpstaub/reverse-proxy-ripcord) to set up a fuctional **web** or **lan** network environment. This step must be completed before moving on. KoBo requires a good network.
 
-4. `ping` associated Koboform, Kobocat, and Enketo Express addresses. All addresses must return a successful ping response. If not, make adjustments to the DNS system until all pings are good. 
+4. Edit the environment file [`envfile.server.txt`](./envfile.server.txt), filling in **all** mandatory variables, and optional variables as needed.
+
+5. Make the DNS system settings changes necessary to reflect the domain and subdomain settings in `envfile.server.txt`.
+
+6. `ping` associated Koboform, Kobocat, and Enketo Express addresses. All addresses must return a successful ping response. If not, make adjustments to the DNS system until all pings are good. 
 
 # KoBo Toolbox Deployment:
 1. [Clone](https://help.github.com/articles/cloning-a-repository/) this repository.
@@ -74,11 +78,9 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
    
     $ rm docker-compose.yml
     
-3. Edit the environment file [`envfile.server.txt`](./envfile.server.txt), filling in **all** mandatory variables, and optional variables as needed.
+3. Optionally enable additional settings for your Google Analytics token, S3 bucket, e-mail settings, etc. by editing the files in [`envfiles/`](./envfiles).
 
-4. Optionally enable additional settings for your Google Analytics token, S3 bucket, e-mail settings, etc. by editing the files in [`envfiles/`](./envfiles).
-
-5. Start the KoBo deployment and monitor logs: 
+4. Start the KoBo deployment and monitor logs: 
 
     $ docker-compose up -d
     
@@ -86,9 +88,9 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
     
     CNTRL c to escape logs
     
-6. When Enketo Express has finished starting and is showing four workers ready browse to the KoBo Toolbox site. Browse to `http://{KOBOFORM_NETWORK_SUBDOMAIN}.{NETWORK_DOMAIN_NAME}`. For deployments making use of LetsEncrypt the browser should be automatically directed to the https KoBo Toolbox site.
+5. When Enketo Express has finished starting and is showing four workers ready browse to the KoBo Toolbox site. Browse to `http://{KOBOFORM_NETWORK_SUBDOMAIN}.{NETWORK_DOMAIN_NAME}`. For deployments making use of LetsEncrypt the browser should be automatically directed to the https KoBo Toolbox site.
 
-7. To check on the status of KoBo containers:
+6. To check on the status of KoBo containers:
 
     $ docker-compose ps
     
@@ -96,7 +98,7 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
    
     $ docker ps
 
-8. Stop the KoBo deployment as required:
+7. Stop the KoBo deployment as required:
 
    To preserve the KoBo containers for later use:
    
