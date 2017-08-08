@@ -41,7 +41,7 @@ Summary: A deliberate KoBo deployment is broken down into three categories. Firs
 
 Confirming proper network configuration can be tedious and time consuming. However, it is **absolutely** critical that the network is working properly before deploying KoBo Toolbox. If the network is not working correctly there is no chance that KoBo Toolbox will work correctly given that KoBo relies on the network to operate. DO NOT try to deploy KoBo without a known good network configuration. Fix network problems first then deploy KoBo. KoBo is too complex to use it to diagnose and correct network configuration problems. 
 
-**Note: Command line instructions must be executed inside the reverse-proxy-ripcord directory.**
+**Note: Command line instructions must be executed inside the directory applicable to the particular service whether it be `kobo-docker-ripcord` or `reverse-proxy-ripcord`.**
 
 # Server Setup:
 Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-16-04) has excellent tutorials that make configuration easy and repeatable. 
