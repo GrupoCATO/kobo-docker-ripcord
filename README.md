@@ -37,9 +37,9 @@ updated on the KoBo admin page.
 Correct network setup is a fundamental requirement to successfully deploy an instance of KoBo Toolbox using `kobo-docker-ripcord`. Personnel deploying KoBo Toolbox with `kobo-docker-ripcord` need a working knowledge of and access to routers and DNS mechanisms (private network DNS servers and/or public DNS providers depending on deployment type). In the case of **WEB** accessible deployments, router access is required to forward **HTTP** (port 80) and **HTTPS** (port 443) traffic to the Docker host running on the local network. In the case of both **WEB** and **LAN** accessible deployments, DNS mechanism access is required to set domain and subdomain information as well as to provide the DNS mechanism with destination information so that users can successfully browse to the KoBo Toolbox instance. For those with limited or no knowledge of routers and DNS mechanisms, it is still possible to deploy KoBo Toolbox using `kobo-docker-ripcord`. Just expect to go through all the agony and wasted time associated with learning the things a person with IT experience had to go through. The information and tools provided below should accelerate the deployment process. However, the deployment of KoBo Toolbox using `kobo-docker-ripcord` will in all liklihood not be a painless process. There are a mountain of variables and there is no practical way to cover them all. Hopefully the community can help when times are darkest.   
 
 # Setup procedure:
-Summary: A deliberate KoBo deployment is broken down into three categories. First, a server with all necessary updates is set up with [Docker Engine](https://docs.docker.com/engine/) and [Docker Compose](https://docs.docker.com/compose/). Next, proper network configuration is verfied by deploying `network-ripcord`. `network-ripcord` includes a web server to aid in network configuration verfication and troubleshooting. After network functionality is confirmed KoBo Toolbox is deployed using `kobo-docker-ripcord`.
+Summary: A deliberate KoBo deployment is broken down into three categories. First, a server with all necessary updates is set up with [Docker Engine](https://docs.docker.com/engine/) and [Docker Compose](https://docs.docker.com/compose/). Next, proper network configuration is verfied by deploying `reverse-proxy-ripcord`. `reverse-proxy-ripcord` includes a web server to aid in network configuration verfication and troubleshooting. After network functionality is confirmed KoBo Toolbox is deployed using `kobo-docker-ripcord`.
 
-Confirming proper network configuration can be tedious and time consuming. However, it is **absolutely** critical that the network is working properly before deploying KoBo Toolbox. If the network is not working correctly there is no chance that KoBo Toolbox will work correctly given that KoBo relies on the network to operate. DO NOT try to deploy KoBo without a know good network configuration. Fix network problems first then deploy KoBo.
+Confirming proper network configuration can be tedious and time consuming. However, it is **absolutely** critical that the network is working properly before deploying KoBo Toolbox. If the network is not working correctly there is no chance that KoBo Toolbox will work correctly given that KoBo relies on the network to operate. DO NOT try to deploy KoBo without a known good network configuration. Fix network problems first then deploy KoBo. KoBo is too complex to use it to diagnose and correct network configuration problems. 
 
 # Server Setup:
 Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-16-04) has excellent tutorials that make configuration easy and repeatable. 
@@ -51,40 +51,61 @@ Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tut
 3. [Disable the Ubuntu Server Firewall](https://help.ubuntu.com/community/UFW) -- Firewall is disabled to eliminate problems during deployment. **After** a fully functional KoBo deployment is made feel free to enable the firewall.
 
 # Network Setup:
-
-
 1. The first decision to make is whether your KoBo Toolbox deployment will be **HTTP** or **HTTPS** accessible. While secure communications provided by **HTTPS** are desirable, **HTTPS** is not available for **LAN** deployments based on how [letsencrypt](https://letsencrypt.org/) verifies certificates. **HTTP** deployments are suitable in cases where security threats are unlikely, such as for use strictly within a secure **LAN** network. To emphasize the difference between the two types of setup, they are referred to herein as **web** (HTTPS) and **lan** (HTTP).
 
-2. Clone this repository, retaining the directory name `kobo-docker`.
+2. [Clone](https://help.github.com/articles/cloning-a-repository/) [reverse-proxy-ripcord](https://github.com/jpstaub/reverse-proxy-ripcord).
 
-3. [Install Docker Compose for Linux on x86-64](https://docs.docker.com/compose/install/). Power users on Mac OS X and Windows can try [the new Docker beta for those platforms](https://blog.docker.com/2016/03/docker-for-mac-windows-beta/), but there are known issues with filesystem syncing on those platforms.
+3. Follow the instructions in [reverse-proxy-ripcord](https://github.com/jpstaub/reverse-proxy-ripcord) to set up a fuctional **web** or **lan** network environment. This step must be completed before moving on. KoBo requires a good network.
 
-4. Decide whether you want to create an HTTP-only **local** instance of KoBo Toolbox, or a HTTPS publicly-accessible **server** instance. Local instances will use [`docker-compose.local.yml`](./docker-compose.local.yml) and [`envfile.local.txt`](./envfile.local.txt), whereas server instances will use [`docker-compose.server.yml`](./docker-compose.server.yml) and [`envfile.server.txt`](./envfile.server.txt) instead.  
-**NOTE:** For server instances, **you are expected to meet the usual basic requirements of serving over HTTPS**. That is, **public (not local-only) DNS records** for the domain and subdomains as specified in [`envfile.server.txt`](./envfile.server.txt), as well as a **CA-signed (not self-signed)** wildcard (or SAN) SSL certificate+key pair valid for those subdomains, and **some basic knowledge of Nginx server administration and the use of SSL**.
+4. `ping` associated Koboform, Kobocat, and Enketo Express addresses. All addresses must return a successful ping response. If not, make adjustments to the DNS system until all pings are good. 
 
-5. Based on your desired instance type, create a symlink named `docker-compose.yml` to either [`docker-compose.local.yml`](./docker-compose.local.yml) or [`docker-compose.server.yml`](./docker-compose.server.yml) (e.g. `ln -s docker-compose.local.yml docker-compose.yml`). Alternatively, you can skip this step and explicitly prefix all Docker Compose commands as follows: `docker-compose -f docker-compose.local.yml ...`.
+# KoBo Toolbox Deployment:
+1. [Clone](https://help.github.com/articles/cloning-a-repository/) this repository.
 
-6. Pull the latest images from Docker Hub: `docker-compose pull`. **Note:** Pulling updated images doesn't remove the old ones, so if your drive is filling up, try removing outdated images with e.g. `docker rmi`.
+2. Based on your desired instance type, create a symlink named `docker-compose.yml` to either [`docker-compose.web.yml`](./docker-compose.web.yml) or [`docker-compose.lan.yml`](./docker-compose.lan.yml) using the following as an example:
 
-7. Edit the appropriate environment file for your instance type, [`envfile.local.txt`](./envfile.local.txt) or [`envfile.server.txt`](./envfile.server.txt), filling in **all** mandatory variables, and optional variables as needed.
+    $ln -s docker-compose.web.yml docker-compose.yml 
+    
+   To see whether or not a symlink was created properly:
+   
+    $ ls -la
 
-8. Optionally enable additional settings for your Google Analytics token, S3 bucket, e-mail settings, etc. by editing the files in [`envfiles/`](./envfiles).
+   To remove a symlink run:
+   
+    $ rm docker-compose.yml
+    
+3. Edit the environment file [`envfile.server.txt`](./envfile.server.txt), filling in **all** mandatory variables, and optional variables as needed.
 
-9. **Server-only steps:**
-    1. Make a `secrets` directory in the project root and copy the SSL certificate and key files to `secrets/ssl.crt` and `secrets/ssl.key` respectively. **The certificate and key are expected to use exactly these filenames and must comprise either a wildcard or SAN certificate+key pair which are valid for the domain and subdomains specified in [`envfile.server.txt`](./envfile.server.txt).**
+4. Optionally enable additional settings for your Google Analytics token, S3 bucket, e-mail settings, etc. by editing the files in [`envfiles/`](./envfiles).
 
-    2. If testing on a server that is not publicly accessible at the subdomains you've specified in [`envfile.server.txt`](./envfile.server.txt), put an entry in your host machine's `/etc/hosts` file for each of the three subdomains you entered to reroute such requests to your machine's address (e.g. `192.168.1.123 kf-local.kobotoolbox.org`). Also, uncomment and customize the `extra_hosts` directives in [`docker-compose.server.yml`](./docker-compose.server.yml). This can also be necessary in situations where 
-<!-- 8. Optionally stop and clear previously built `kobo-docker` containers: `docker-compose stop; docker-compose rm`. -->
-<!-- 9. Optionally clear persisted files (e.g. the Postgres database) from previous runs, **taking care that you are in the `kobo-docker` directory**: `sudo rm -rf .vols/ log/`. -->
+5. Start the KoBo deployment and monitor logs: 
 
-10. Build any images you've chosen to manually override: `docker-compose build`.
+    $ docker-compose up -d
+    
+    $ docker-compose logs -f 
+    
+    CNTRL c to escape logs
+    
+6. When Enketo Express has finished starting and is showing four workers ready browse to the KoBo Toolbox site. Browse to `http://{KOBOFORM_NETWORK_SUBDOMAIN}.{NETWORK_DOMAIN_NAME}`. For deployments making use of LetsEncrypt the browser should be automatically directed to the https KoBo Toolbox site.
 
-11. Start the server: `docker-compose up -d` (or without the `-d` option to run in the foreground).
+7. To check on the status of KoBo containers:
 
-12. Container output can be followed with `docker-compose logs -f`. For an individual container, logs can be followed by using the container name from your `docker-compose.yml` with e.g. `docker-compose logs -f enketo_express`.
+    $ docker-compose ps
+    
+   or
+   
+    $ docker ps
 
-"Local" setup users can now reach KoBo Toolbox at `http://${HOST_ADDRESS}:${KPI_PUBLIC_PORT}` (substituting in the values entered in [`envfile.local.txt`](./envfile.local.txt)), while "server" setups can be reached at `https://${KOBOFORM_PUBLIC_SUBDOMAIN}.${PUBLIC_DOMAIN_NAME}` (similarly substituting from [`envfile.server.txt`](./envfile.server.txt)). Be sure to periodically update your containers, especially `nginx`, for security updates by pulling new changes from this `kobo-docker` repo then running e.g. `docker-compose pull && docker-compose up -d`.
+8. Stop the KoBo deployment as required:
 
+   To preserve the KoBo containers for later use:
+   
+    $ docker-compose stop
+
+   To destroy the KoBo containers (data volumes will be retained for later use so long as the `kobo-docker-ripcord` directory persists):
+   
+    $ docker-compose down
+    
 # Backups
 Automatic, periodic backups of KoBoCAT media, MongoDB, and Postgres can be individually enabled by uncommenting (and optionally customizing) the `*_BACKUP_SCHEDULE` variables in your `envfile`. When enabled, timestamped backups will be placed in `backups/kobocat`, `backups/mongo`, and `backups/postgres`, respectively. Redis backups are currently not generated, but the `redis_main` DB file is updated every 5 minutes and can always be found in `.vols/redis_main_data/`.
 
@@ -98,9 +119,17 @@ docker exec -it kobodocker_postgres_1 /srv/backup_postgres.bash
 # Troubleshooting
 
 ## Basic troubleshooting
-You can confirm that your containers are running with `docker ps`. To inspect the log output from the containers, execute `docker-compose logs -f` or for a specific container use e.g. `docker-compose logs -f redis_main`.
+1. Confirm that containers in general are running with `docker ps`. 
 
-The documentation for Docker can be found at https://docs.docker.com.
+2. To inspect the log output from the containers, execute `docker-compose logs -f` or for a specific container use e.g. `docker-compose logs -f redis_main`. It is also worth checking the logs of the `reverse-proxy-ripcord` containers to see how the network is responding to requests. 
+
+3. Use `ping` to confirm the addresses of Koboform, Kobocat, and Enketo Express are routing correctly. If good pings are returned the problem is likely associated with router port forwarding. 
+
+4. Double check that router port forwarding is set correctly. 
+
+5. Double check the firewall on the Docker host is disabled.
+
+6. Any many other items associated with your given deployment. 
 
 ## Django debugging
 Developers can use [PyDev](http://www.pydev.org/)'s [remote, graphical Python debugger](http://www.pydev.org/manual_adv_remote_debugger.html) to debug Python/Django code. To enable for the `kpi` container:
