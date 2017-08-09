@@ -79,21 +79,20 @@ To remove a symlink run:
 4. Make the DNS system settings changes necessary to reflect the domain and subdomain settings made in `envfile.server.txt`.
 
 5. `ping` associated Koboform, Kobocat, and Enketo Express addresses. All addresses must return a successful ping response. If
-not, make adjustments to the DNS system until all pings are good. 
+not, make adjustments to the DNS system until all pings are good. An example `ping` command is included below.
 
-    $ ping kobo.example.com
+```$ ping kobo.example.com```
 
 6. Optionally enable additional settings for your Google Analytics token, S3 bucket, e-mail settings, etc. by editing the files in [`envfiles/`](./envfiles).
 
 7. Start the KoBo deployment and monitor logs: 
     
- ```$ docker-compose up -d```
-    
- ```$ docker-compose logs -f``` 
+ ```$ docker-compose up -d
+    $ docker-compose logs -f``` 
     
 CNTRL c to escape logs
     
-8. When Enketo Express has finished starting and is showing four workers ready browse to the KoBo Toolbox site. Browse to `http://{KOBOFORM_NETWORK_SUBDOMAIN}.{NETWORK_DOMAIN_NAME}`. For deployments making use of LetsEncrypt the browser should be automatically directed to the https KoBo Toolbox site.
+8. When Enketo Express has finished starting and is showing workers ready, browse to the KoBo Toolbox site. Browse to `http://{KOBOFORM_NETWORK_SUBDOMAIN}.{NETWORK_DOMAIN_NAME}`. For deployments making use of LetsEncrypt the browser should be automatically redirected to the https KoBo Toolbox site.
 
 9. To check on the status of KoBo containers:
 
@@ -116,11 +115,11 @@ To destroy the KoBo containers (data volumes will be retained for later use so l
 # Backups
 Automatic, periodic backups of KoBoCAT media, MongoDB, and Postgres can be individually enabled by uncommenting (and optionally customizing) the `*_BACKUP_SCHEDULE` variables in your `envfile`. When enabled, timestamped backups will be placed in `backups/kobocat`, `backups/mongo`, and `backups/postgres`, respectively. Redis backups are currently not generated, but the `redis_main` DB file is updated every 5 minutes and can always be found in `.vols/redis_main_data/`.
 
-Backups can also be manually triggered when `kobo-docker` is running by executing the the following commands:
+Backups can also be manually triggered when `kobo-docker` is running by executing the following commands:
 ```
-docker exec -it kobodocker_kobocat_1 /srv/src/kobocat/docker/backup_media.bash
-docker exec -it kobodocker_mongo_1 /srv/backup_mongo.bash
-docker exec -it kobodocker_postgres_1 /srv/backup_postgres.bash
+docker exec -it kobodockerripcord_kobocat_1 /srv/src/kobocat/docker/backup_media.bash
+docker exec -it kobodockerripcord_mongo_1 /srv/backup_mongo.bash
+docker exec -it kobodockerripcord_postgres_1 /srv/backup_postgres.bash
 ```
 
 # Troubleshooting
@@ -136,15 +135,19 @@ docker exec -it kobodocker_postgres_1 /srv/backup_postgres.bash
 
 5. Double check the firewall on the Docker host is disabled.
 
-6. Any many other items associated with your given deployment. 
+6. And many other items associated with your given deployment. 
 
 ## Django debugging
 Developers can use [PyDev](http://www.pydev.org/)'s [remote, graphical Python debugger](http://www.pydev.org/manual_adv_remote_debugger.html) to debug Python/Django code. To enable for the `kpi` container:
 
 1. Specify the mapping(s) between target Python source/library paths on the debugging machine to the locations of those files/directories inside the container by customizing and uncommenting the `KPI_PATH_FROM_ECLIPSE_TO_PYTHON_PAIRS` variable in [`envfiles/kpi.txt`](./envfiles/kpi.txt).
+
 2. Share the source directory of the PyDev remote debugger plugin into the container by customizing (taking care to note the actual location of the version-numbered directory) and uncommenting the relevant `volumes` entry in your `docker-compose.yml`.
+
 3. To ensure PyDev shows you the same version of the code as is being run in the container, share your live version of any target Python source/library files/directories into the container by customizing and uncommenting the relevant `volumes` entry in your `docker-compose.yml`.
+
 4. Start the PyDev remote debugger server and ensure that no firewall or other settings will prevent the containers from connecting to your debugging machine at the reported port.
+
 5. Breakpoints can be inserted with e.g. `import pydevd; pydevd.settrace('${DEBUGGING_MACHINE_IP}')`.
 
 Remote debugging in the `kobocat` container can be accomplished in a similar manner.
