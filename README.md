@@ -44,7 +44,7 @@ Confirming proper network configuration can be tedious and time consuming. Howev
 **Note: Command line instructions must be executed inside the directory applicable to the particular service whether it be `kobo-docker-ripcord` or `reverse-proxy-ripcord`.**
 
 # Server Setup:
-Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-16-04) has excellent tutorials that make configuration easy and repeatable. 
+Ubuntu is used because [DigitalOcean](https://www.digitalocean.com/community/tutorials) has excellent tutorials that make configuration easy and repeatable. 
 
 1. [Update Ubuntu Server](https://www.techonthenet.com/linux/sysadmin/ubuntu/update_16_04.php) -- Bring the server up to date.
 
