@@ -33,6 +33,11 @@ updated on the KoBo admin page.
 
 [FreeDNS](http://freedns.afraid.org/) -- Bare bones but highly functional DNS provider with free domain names for testing purposes.
 
+Running the following command will give linux manual page specifics about a command that is giving you trouble:
+```
+$ man [command]
+```
+
 # A word of advice:
 Correct network setup is a fundamental requirement to successfully deploy an instance of KoBo Toolbox using `kobo-docker-ripcord`. Personnel deploying KoBo Toolbox with `kobo-docker-ripcord` need a working knowledge of and access to routers and DNS mechanisms (private network DNS servers and/or public DNS providers depending on deployment type). In the case of **WEB** accessible deployments, router access is required to forward **HTTP** (port 80) and **HTTPS** (port 443) traffic to the Docker host running on the local network. In the case of both **WEB** and **LAN** accessible deployments, DNS mechanism access is required to set domain and subdomain information as well as to provide the DNS mechanism with destination information so that users can successfully browse to the KoBo Toolbox instance. For those with limited or no knowledge of routers and DNS mechanisms, it is still possible to deploy KoBo Toolbox using `kobo-docker-ripcord`. Just expect to go through all the agony and wasted time associated with learning the things a person with IT experience had to go through. The information and tools provided below should accelerate the deployment process. However, the deployment of KoBo Toolbox using `kobo-docker-ripcord` will in all liklihood not be a painless process. There are a mountain of variables and there is no practical way to cover them all. Hopefully the community can help when times are darkest.   
 
