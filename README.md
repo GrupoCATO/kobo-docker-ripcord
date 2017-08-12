@@ -37,6 +37,18 @@ Running the following command will give linux manual page specifics about a comm
 ```
 $ man [command]
 ```
+# Instance Configuration
+Resource estimates are provided for two cases:
+
+For a `production system` with tens (and hundreds) of users, minimum recommended allocations are provided **in bold**. For a `demonstration system` that will provide the full KoBo functionality to a very limited number of users, _italics figures_ indicate the smallest configuration known to have run the system in the past. 
+* Virtual or Dedicated server:
+  * **Full CPU** or more (_2 CPU cores_)
+  * **4 GB RAM** or more (_2 GB RAM_)
+  * **200 GB storage** space (_20 GB storage_)
+  * **50 GB backup** storage (_0 GB backup_)
+  * Internet connectivity
+* OS: Ubuntu Xenial, v16.04 LTS
+* Domain Name
 
 # A word of advice:
 Correct network setup is a fundamental requirement to successfully deploy an instance of KoBo Toolbox using `kobo-docker-ripcord`. Personnel deploying KoBo Toolbox with `kobo-docker-ripcord` need a working knowledge of and access to routers and DNS mechanisms (private network DNS servers and/or public DNS providers depending on deployment type). In the case of **WEB** accessible deployments, router access is required to forward **HTTP** (port 80) and **HTTPS** (port 443) traffic to the Docker host running on the local network. In the case of both **WEB** and **LAN** accessible deployments, DNS mechanism access is required to set domain and subdomain information as well as to provide the DNS mechanism with destination information so that users can successfully browse to the KoBo Toolbox instance. For those with limited or no knowledge of routers and DNS mechanisms, it is still possible to deploy KoBo Toolbox using `kobo-docker-ripcord`. Just expect to go through all the agony and wasted time associated with learning the things a person with IT experience had to go through. The information and tools provided below should accelerate the deployment process. However, the deployment of KoBo Toolbox using `kobo-docker-ripcord` will in all liklihood not be a painless process. There are a mountain of variables and there is no practical way to cover them all. Hopefully the community can help when times are darkest.   
