@@ -37,7 +37,7 @@ Running the following command will give linux manual page specifics about a comm
 ```
 $ man [command]
 ```
-# Instance Configuration
+# Instance Configuration:
 Resource estimates are provided for two cases:
 
 For a `production system` with tens (and hundreds) of users, minimum recommended allocations are provided **in bold**. For a `demonstration system` that will provide the full KoBo functionality to a very limited number of users, _italics figures_ indicate the smallest configuration known to have run the system in the past. 
